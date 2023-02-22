@@ -1,0 +1,21 @@
+body{
+    background-color: black;
+}
+
+.title{
+    height: 100px;
+    background-color: aqua;
+}
+
+h1{
+    text-align: center;
+    color: red;
+    margin: 0;
+    padding-top: 60px;
+}
+
+#map {
+  width: 100%;
+  height: 500px;
+}
+
