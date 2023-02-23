@@ -1,3 +1,6 @@
+<%@ page import="com.demo.controller.connectionSQL" %>
+
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -27,50 +30,31 @@
             <input  name="txtpassword1" type="password" placeholder="Password">
             <input  name="txtpassword2" type="password" placeholder="Password">
         </div>
+        <% connectionSQL conn = new connectionSQL(); %>
         <label for="incident-select1">Selectionnez le type d'incident:</label>
-        <select name="valueincident1" id="incident-select1">
-            <option value=""></option>
-            <option value="Incendie">Incendie</option>
-            <option value="Accident_routier">Accident routier</option>
-            <option value="Accident_fluvial">Accident fluvial</option>
-            <option value="Accident_aérien">Accident aérien</option>
-            <option value="Eboulement">Eboulement</option>
-            <option value="Invasion_serpent">Invasion de serpent</option>
-            <option value="Fuite_gaz">Fuite de gaz</option>
-            <option value="Manifestation">Manifestation</option>
-            <option value="Braquage">Braquage</option>
-            <option value="Evasion d’un prisonnier">Evasion d’un prisonnier</option>
+        <select name="valueincident1">
+            <% for (String value : conn.getIncident()) { %>
+                <option value=""></option>
+                <option value="<%= value %>"><%= value %></option>
+            <% } %>
         </select>
 
         <label for="incident-select2">Selectionnez le type d'incident:</label>
-        <select name="valueincident2" id="incident-select2">
-            <option value=""></option>
-            <option value="Incendie">Incendie</option>
-            <option value="Accident_routier">Accident routier</option>
-            <option value="Accident_fluvial">Accident fluvial</option>
-            <option value="Accident_aérien">Accident aérien</option>
-            <option value="Eboulement">Eboulement</option>
-            <option value="Invasion_serpent">Invasion de serpent</option>
-            <option value="Fuite_gaz">Fuite de gaz</option>
-            <option value="Manifestation">Manifestation</option>
-            <option value="Braquage">Braquage</option>
-            <option value="Evasion d’un prisonnier">Evasion d’un prisonnier</option>
+        <select name="valueincident2">
+            <% for (String value : conn.getIncident()) { %>
+                <option value=""></option>
+                <option value="<%= value %>"><%= value %></option>
+            <% } %>
         </select>
 
         <label for="incident-select3">Selectionnez le type d'incident:</label>
-        <select name="valueincident3" id="incident-select3">
-            <option value=""></option>
-            <option value="Incendie">Incendie</option>
-            <option value="Accident_routier">Accident routier</option>
-            <option value="Accident_fluvial">Accident fluvial</option>
-            <option value="Accident_aérien">Accident aérien</option>
-            <option value="Eboulement">Eboulement</option>
-            <option value="Invasion_serpent">Invasion de serpent</option>
-            <option value="Fuite_gaz">Fuite de gaz</option>
-            <option value="Manifestation">Manifestation</option>
-            <option value="Braquage">Braquage</option>
-            <option value="Evasion d’un prisonnier">Evasion d’un prisonnier</option>
+        <select name="valueincident3">
+            <% for (String value : conn.getIncident()) { %>
+                <option value=""></option>
+                <option value="<%= value %>"><%= value %></option>
+            <% } %>
         </select>
+
         <button  class="inscription" type="submit" >S'inscrire </button>
 
           <div id="map"></div>

@@ -75,4 +75,21 @@ public class connectionSQL {
         }
         return heroList;
     }
+
+
+    public List<String> getIncident() {
+        List<String> values = new ArrayList<>();
+        try (Connection conn = DriverManager.getConnection(jdbcUrl, user, password);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT Incident FROM superherojava.incidents")) {
+
+            while (rs.next()) {
+                values.add(rs.getString("Incident"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return values;
+    }
+
 }
