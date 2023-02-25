@@ -8,8 +8,6 @@ public class connectionSQL {
     private static String jdbcUrl = "jdbc:mysql://localhost:3306/superherojava";
     private static String user = "root";
     private static String password = "root";
-
-
     private Connection connection;
 
     public static void getincident() {

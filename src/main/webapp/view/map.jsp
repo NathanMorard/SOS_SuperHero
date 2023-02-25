@@ -1,3 +1,5 @@
+<%@ page import="com.demo.controller.connectionSQL" %>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -18,9 +20,20 @@
 <body>
     <div class="title">
         <h1>Veuillez indiquer sur la carte votre localisation</h1>
+        <h2>Veuillez choisir le type d'incident<h2>
     </div>
 
+
+    <label for="incident-select1">Selectionnez le type d'incident:</label>
+    <select name="valueincident1">
+        <option value=""></option>
+        <% connectionSQL conn = new connectionSQL();
+        for (String value : conn.getIncident()) { %>
+            <option value="<%= value %>"><%= value %></option>
+        <% } %>
+    </select>
     <div id="map"></div>
+
     <Script>
         var map = L.map('map');
         map.setView([43.529742, 5.447427], 13);
