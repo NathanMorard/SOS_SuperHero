@@ -1,4 +1,7 @@
 <%@ page import="com.demo.controller.connectionSQL" %>
+<%@ page import="java.util.List" %>
+<%@ page import="com.google.gson.Gson" %>
+
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -11,107 +14,54 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
     integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
     crossorigin=""/>
-    <link rel="stylesheet" href="../CSS/mapstyle.css">
+    <link rel="stylesheet" href="CSS/mapstyle.css">
 
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
     integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
     crossorigin=""></script>
 </head>
 <body>
-    <div class="title">
-        <h1>Veuillez indiquer sur la carte votre localisation</h1>
-        <h2>Veuillez choisir le type d'incident<h2>
-    </div>
-
-
-    <label for="incident-select1">Selectionnez le type d'incident:</label>
-    <select name="valueincident1">
-        <option value=""></option>
-        <% connectionSQL conn = new connectionSQL();
-        for (String value : conn.getIncident()) { %>
-            <option value="<%= value %>"><%= value %></option>
-        <% } %>
-    </select>
     <div id="map"></div>
 
-    <Script>
-        var map = L.map('map');
-        map.setView([43.529742, 5.447427], 13);
-
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
+<script type="text/javascript">
 
 
-        navigator.geolocation.watchPosition(success, error);
+ var map = L.map('map').setView([43.529742, 5.447427], 13);
+ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+   attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+     '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+     'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+   maxZoom: 18,
+ }).addTo(map);
 
-        let marker, circle, zoomed;
 
-        function success(pos){
-            const lat = pos.coords.latitude
-            const lng = pos.coords.longitude
-            const accuracy = pos.coords.accuracy
+ let marker, circle, zoomed;
 
-            if (marker){
-                map.removeLayer(marker);
-                map.removeLayer(circle);
-            }
+ // Récupération de la liste des coordonnées des héros depuis la base de données
+ <% connectionSQL conn = new connectionSQL();
+    List<String> heroList = conn.getHero();
+ %>
 
-            marker = L.marker([lat, lng]).addTo(map);
-            circle = L.circle([lat, lng], 30000).addTo(map);
+ function printHero(heroList) {
+   // Parcourir la liste de coordonnées et ajouter des marqueurs sur la carte
+   console.log('Avant boucle');
+   for (var i = 0; i < heroList.length; i++) {
+     var coords = heroList[i].split(",");
+     console.log(heroList);
+     console.log("dans boucle");
+     var lat = parseFloat(coords[0]);
+     var lon = parseFloat(coords[1]);
+     alert(coords);
+     L.marker([lat, lon], {icon: redIcon).addTo(map);
+   }
+ }
 
-            if (!zoomed){
-                zoomed = map.fitBounds(circle.getBounds)
-            }
+ // Appel de la fonction avec la liste des héros récupérée précédemment
+ console.log('Appel fonction');
+ console.log("heroList:", <%= new Gson().toJson(heroList) %>);
+ printHero(<%= new Gson().toJson(heroList) %>);
 
-            map.setView([lat, lng]);
+</script>
 
-        }
-
-        function error(){
-            if(er.code === 1){
-                alert("Veuillez autorisez l'accès à la géolocalisation")
-            }else{
-                alert("Géolocalisation inconnu")
-            }
-
-        }
-
-        function onMapClick(event) {
-          var latlng = event.latlng;
-          var latitude = latlng.lat;
-          var longitude = latlng.lng;
-          var message = "Vous avez cliqué sur les coordonnées : " + latitude + ", " + longitude;
-          if(marker){
-            map.removeLayer(marker);
-            map.removeLayer(circle);
-          }
-          marker = L.marker([latitude, longitude]).addTo(map);
-          circle = L.circle([latitude, longitude], 30000).addTo(map);
-        }
-
-        function afficherPointsSurCarte(heroList) {
-          // Récupérer la carte Leaflet
-          var map = L.map('map');
-
-          // Ajouter une couche OpenStreetMap
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-              '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-              'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-            maxZoom: 18,
-          }).addTo(map);
-
-          // Parcourir la liste des héros et placer un point pour chaque héros
-          for (var i = 0; i < heroList.length; i++) {
-            var hero = heroList[i];
-            var latlng = L.latLng(hero.latitude, hero.longitude);
-            L.marker(latlng).addTo(map);
-          }
-        }
-
-        map.on('click', onMapClick);
-    </Script>
 </body>
 </html>

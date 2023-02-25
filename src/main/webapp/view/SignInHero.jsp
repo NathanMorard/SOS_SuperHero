@@ -33,24 +33,24 @@
         <% connectionSQL conn = new connectionSQL(); %>
         <label for="incident-select1">Selectionnez le type d'incident:</label>
         <select name="valueincident1">
+            <option value=""></option>
             <% for (String value : conn.getIncident()) { %>
-                <option value=""></option>
                 <option value="<%= value %>"><%= value %></option>
             <% } %>
         </select>
 
         <label for="incident-select2">Selectionnez le type d'incident:</label>
         <select name="valueincident2">
+            <option value=""></option>
             <% for (String value : conn.getIncident()) { %>
-                <option value=""></option>
                 <option value="<%= value %>"><%= value %></option>
             <% } %>
         </select>
 
         <label for="incident-select3">Selectionnez le type d'incident:</label>
         <select name="valueincident3">
+        <option value=""></option>
             <% for (String value : conn.getIncident()) { %>
-                <option value=""></option>
                 <option value="<%= value %>"><%= value %></option>
             <% } %>
         </select>
@@ -64,9 +64,10 @@
 
     <Script>
         var map = L.map('map');
+        map.setView([43.529742, 5.447427], 13);
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 59,
+            maxZoom: 18,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
 
@@ -84,15 +85,10 @@
                 map.removeLayer(marker);
                 map.removeLayer(circle);
             }
-
+            map.setView([lat, lng], 19);
             marker = L.marker([lat, lng]).addTo(map);
             circle = L.circle([lat, lng], 30000).addTo(map);
-            document.getElementsByName("intlat")[0].value = lat;
-            document.getElementsByName("intlng")[0].value = lng;
 
-            if (!zoomed){
-                zoomed = map.fitBounds(circle.getBounds)
-            }
 
             map.setView([lat, lng]);
 
@@ -111,16 +107,14 @@
           var latlng = event.latlng;
           var latitude = latlng.lat;
           var longitude = latlng.lng;
+          var message = "Vous avez cliqué sur les coordonnées : " + latitude + ", " + longitude;
           if(marker){
             map.removeLayer(marker);
             map.removeLayer(circle);
           }
           marker = L.marker([latitude, longitude]).addTo(map);
           circle = L.circle([latitude, longitude], 30000).addTo(map);
-          document.getElementsByName("intlat")[0].value = latitude;
-          document.getElementsByName("intlng")[0].value = longitude;
         }
-
         map.on('click', onMapClick);
     </Script>
 </body>

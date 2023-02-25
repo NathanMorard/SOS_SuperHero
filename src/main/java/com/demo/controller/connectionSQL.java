@@ -3,6 +3,8 @@ package com.demo.controller;
 import java.sql.*;
 import java.util.List;
 import java.util.ArrayList;
+import com.google.gson.Gson;
+
 
 public class connectionSQL {
     private static String jdbcUrl = "jdbc:mysql://localhost:3306/superherojava";
@@ -29,7 +31,7 @@ public class connectionSQL {
         }
     }
 
-    public static void getHero(String name, String incident1, String incident2, String incident3, String phone, String lat, String lng) {
+    public static void insertHero(String name, String incident1, String incident2, String incident3, String phone, String lat, String lng) {
         String request = "INSERT INTO superherojava.superhero (NameHero, Incident1, Incident2, Incident3, Phone, latitude, longtitude ) VALUES (?,?,?,?,?,?,?)";
         try {
             Connection con = DriverManager.getConnection(jdbcUrl, user, password);
@@ -59,10 +61,13 @@ public class connectionSQL {
 
             ResultSet rs = stmhero.executeQuery();
             while (rs.next()) {
-                double latitude = rs.getDouble("latitude");
-                double longitude = rs.getDouble("longitude");
+                String latitudeStr = rs.getString("latitude");
+                String longitudeStr = rs.getString("longitude");
+                double latitude = Double.parseDouble(latitudeStr);
+                double longitude = Double.parseDouble(longitudeStr);
                 heroList.add(latitude + "," + longitude);
             }
+
 
             rs.close();
             stmhero.close();
@@ -71,8 +76,15 @@ public class connectionSQL {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        if (heroList.isEmpty()) {
+            // La liste est vide, faire quelque chose
+            System.out.println("La liste est vide !");
+        }
+
         return heroList;
     }
+
 
 
     public List<String> getIncident() {

@@ -58,7 +58,7 @@ public class SignInHeroServlet extends HttpServlet {
         }
 
         connectionSQL cc = new connectionSQL();
-        cc.getHero(name, incident1, incident2, incident3, phone, lat, lng);
+        cc.insertHero(name, incident1, incident2, incident3, phone, lat, lng);
         response.sendRedirect("/view/map.jsp");
     }
 }

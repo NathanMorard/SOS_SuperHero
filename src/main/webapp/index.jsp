@@ -1,4 +1,11 @@
 <%@ page import="com.demo.controller.connectionSQL" %>
+<%@ page import="java.util.List" %>
+<%@ page import="com.google.gson.Gson" %>
+
+<%
+connectionSQL conn = new connectionSQL();
+List<String> heroList = conn.getHero();
+%>
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -33,10 +40,13 @@
             <label class="textselect" for="incident-select1">Selectionnez le type d'incident:</label>
             <select name="valueincident1">
                 <option value=""></option>
+                <% for (String value : conn.getIncident()) { %>
+                    <option value="<%= value %>"><%= value %></option>
+                <% } %>
             </select>
         </div>
         <h4>Cliquez sur la carte pour indiquer votre position</h4>
-        <button>Déclarer l'incident</button>
+        <button>D&eacute;clarer l'incident</button>
     </div>
     <div id="map"></div>
 
@@ -45,7 +55,7 @@
         map.setView([43.529742, 5.447427], 13);
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
+            maxZoom: 18,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
 
@@ -63,13 +73,10 @@
                 map.removeLayer(marker);
                 map.removeLayer(circle);
             }
-
+            map.setView([lat, lng], 19);
             marker = L.marker([lat, lng]).addTo(map);
             circle = L.circle([lat, lng], 30000).addTo(map);
 
-            if (!zoomed){
-                zoomed = map.fitBounds(circle.getBounds)
-            }
 
             map.setView([lat, lng]);
 
@@ -96,28 +103,26 @@
           marker = L.marker([latitude, longitude]).addTo(map);
           circle = L.circle([latitude, longitude], 30000).addTo(map);
         }
-
-        function afficherPointsSurCarte(heroList) {
-          // Récupérer la carte Leaflet
-          var map = L.map('map');
-
-          // Ajouter une couche OpenStreetMap
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-              '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-              'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-            maxZoom: 18,
-          }).addTo(map);
-
-          // Parcourir la liste des héros et placer un point pour chaque héros
-          for (var i = 0; i < heroList.length; i++) {
-            var hero = heroList[i];
-            var latlng = L.latLng(hero.latitude, hero.longitude);
-            L.marker(latlng).addTo(map);
-          }
-        }
-
         map.on('click', onMapClick);
+
+         function printHero(heroList) {
+           // Parcourir la liste de coordonnées et ajouter des marqueurs sur la carte
+           for (var i = 0; i < heroList.length; i++) {
+             var coords = heroList[i].split(",");
+             var lat = parseFloat(coords[0]);
+             var lon = parseFloat(coords[1]);
+             var redIcon = L.icon({
+                 iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                 shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                 iconSize: [25, 41],
+                 iconAnchor: [12, 41],
+                 popupAnchor: [1, -34],
+                 shadowSize: [41, 41]
+             });
+             L.marker([lat, lon], {icon: redIcon}).addTo(map);
+           }
+         }
+         printHero(<%= new Gson().toJson(heroList) %>);
     </Script>
 </body>
 </html>
