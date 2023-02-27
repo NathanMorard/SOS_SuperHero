@@ -3,7 +3,8 @@ package com.demo.controller;
 import java.sql.*;
 import java.util.List;
 import java.util.ArrayList;
-import com.google.gson.Gson;
+
+import com.demo.model.Hero;
 
 
 public class connectionSQL {
@@ -11,25 +12,6 @@ public class connectionSQL {
     private static String user = "root";
     private static String password = "root";
     private Connection connection;
-
-    public static void getincident() {
-        String request = "SELECT * FROM superherojava.incidents;";
-        try {
-            Connection con = DriverManager.getConnection(jdbcUrl, user, password);
-            Statement stm = con.createStatement();
-
-            ResultSet rs = stm.executeQuery(request);
-            while (rs.next()) {
-                System.out.println(rs.getString("Incident"));
-            }
-            rs.close();
-            stm.close();
-            con.close();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
     public static void insertHero(String name, String incident1, String incident2, String incident3, String phone, String lat, String lng) {
         String request = "INSERT INTO superherojava.superhero (NameHero, Incident1, Incident2, Incident3, Phone, latitude, longtitude ) VALUES (?,?,?,?,?,?,?)";
@@ -91,15 +73,50 @@ public class connectionSQL {
         List<String> values = new ArrayList<>();
         try (Connection conn = DriverManager.getConnection(jdbcUrl, user, password);
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT Incident FROM superherojava.incidents")) {
+             ResultSet rs = stmt.executeQuery("SELECT nom_incident FROM superherojava.incidents")) {
 
             while (rs.next()) {
-                values.add(rs.getString("Incident"));
+                values.add(rs.getString("nom_incident"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return values;
+    }
+
+
+    public List<Hero> getHeroForIncident(String incident) {
+        List<Hero> heroList = new ArrayList<>();
+        String request = "SELECT * FROM superherojava.superhero WHERE Incident1=? OR Incident2=? OR Incident3=?;";
+        try {
+            Connection con = DriverManager.getConnection(jdbcUrl, user, password);
+            PreparedStatement stmheroIncident = con.prepareStatement(request);
+            stmheroIncident.setString(1, incident);
+            stmheroIncident.setString(2, incident);
+            stmheroIncident.setString(3, incident);
+
+            ResultSet result = stmheroIncident.executeQuery();
+            while (result.next()) {
+                int heroId = Integer.parseInt(result.getString("idHero"));
+                String heroName = result.getString("NameHero");
+                String heroinc1 = result.getString("Incident1");
+                String heroinc2 = result.getString("Incident2");
+                String heroinc3 = result.getString("Incident3");
+                String heroPhone = result.getString("Phone");
+                String heroLat = result.getString("latitude");
+                String heroLng = result.getString("longitude");
+
+                var hero = new Hero(heroId, heroName, heroinc1, heroinc2, heroinc3, heroPhone,heroLat, heroLng);
+                heroList.add(hero);
+            }
+
+            stmheroIncident.close();
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return heroList;
     }
 
 }

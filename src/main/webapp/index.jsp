@@ -35,19 +35,24 @@ List<String> heroList = conn.getHero();
         </div>
     </div>
 
-    <div id="formMap">
-        <div class="select">
-            <label class="textselect" for="incident-select1">Selectionnez le type d'incident:</label>
-            <select name="valueincident1">
-                <option value=""></option>
-                <% for (String value : conn.getIncident()) { %>
-                    <option value="<%= value %>"><%= value %></option>
-                <% } %>
-            </select>
+    <form action="incident" method="post">
+        <div id="formMap">
+            <div class="select">
+                <label class="textselect" for="incident-select1">Selectionnez le type d'incident:</label>
+                <select name="valuedeclareincident">
+                    <option value=""></option>
+                    <% for (String value : conn.getIncident()) { %>
+                        <option value="<%= value %>"><%= value %></option>
+                    <% } %>
+                </select>
+                <input type="hidden" name="intlat" type="text" placeholder="latitude">
+                <input type="hidden" name="intlng" type="text" placeholder="longitude">
+            </div>
+            <h4>Cliquez sur la carte pour indiquer votre position</h4>
+            <button type="submit">D&eacute;clarer l'incident</button>
         </div>
-        <h4>Cliquez sur la carte pour indiquer votre position</h4>
-        <button>D&eacute;clarer l'incident</button>
-    </div>
+    </form>
+
     <div id="map"></div>
 
     <Script>
@@ -76,7 +81,8 @@ List<String> heroList = conn.getHero();
             map.setView([lat, lng], 19);
             marker = L.marker([lat, lng]).addTo(map);
             circle = L.circle([lat, lng], 30000).addTo(map);
-
+            document.getElementsByName("intlat")[0].value = lat;
+            document.getElementsByName("intlng")[0].value = lng;
 
             map.setView([lat, lng]);
 
@@ -102,6 +108,8 @@ List<String> heroList = conn.getHero();
           }
           marker = L.marker([latitude, longitude]).addTo(map);
           circle = L.circle([latitude, longitude], 30000).addTo(map);
+          document.getElementsByName("intlat")[0].value = latitude;
+          document.getElementsByName("intlng")[0].value = longitude;
         }
         map.on('click', onMapClick);
 

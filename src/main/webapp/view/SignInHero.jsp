@@ -88,6 +88,8 @@
             map.setView([lat, lng], 19);
             marker = L.marker([lat, lng]).addTo(map);
             circle = L.circle([lat, lng], 30000).addTo(map);
+            document.getElementsByName("intlat")[0].value = lat;
+            document.getElementsByName("intlng")[0].value = lng;
 
 
             map.setView([lat, lng]);
@@ -114,6 +116,8 @@
           }
           marker = L.marker([latitude, longitude]).addTo(map);
           circle = L.circle([latitude, longitude], 30000).addTo(map);
+          document.getElementsByName("intlat")[0].value = latitude;
+          document.getElementsByName("intlng")[0].value = longitude;
         }
         map.on('click', onMapClick);
     </Script>

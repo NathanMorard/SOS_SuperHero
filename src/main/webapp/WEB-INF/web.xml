@@ -24,7 +24,7 @@
 <!-- Map servlet-->
   <servlet>
     <servlet-name>map</servlet-name>
-    <servlet-class>com.demo.controller.mapServlet</servlet-class>
+    <servlet-class>com.demo.model.Hero</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>map</servlet-name>
