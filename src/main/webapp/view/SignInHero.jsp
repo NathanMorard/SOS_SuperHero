@@ -24,6 +24,11 @@
 <body>
     <form method="post" action="/SignInHeroServlet">
         <h1>S'inscrire</h1>
+        <% if (request.getAttribute("error") != null && (Boolean)request.getAttribute("error")) { %>
+            <div class="error-message">
+                <span><%= request.getAttribute("errorMessage") %></span>
+            </div>
+        <% } %>
         <p class="email">Utilisez votre Adresse mail: </p>
         <div class="inputs">
             <input  name="txtname" type="text" placeholder="Name">
@@ -133,13 +138,6 @@
         map.on('click', onMapClick);
     </Script>
 
-    <% if (request.getAttribute("error") != null && (Boolean)request.getAttribute("error")) { %>
-        <script>
-            var errorMessage = '<%= request.getAttribute("errorMessage") %>';
-            if (errorMessage !== '') {
-                alert(errorMessage);
-            }
-        </script>
-    <% } %>
+
 </body>
 </html>

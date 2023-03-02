@@ -36,31 +36,40 @@ public class SignInHeroServlet extends HttpServlet {
         String errorMessage = "";
 
         if (name == null || name.isEmpty()) {
-            errorMessage += "Le login est obligatoire";
+            errorMessage += " Le login est obligatoire ";
         }
 
         if (password1 == null || password1.isEmpty()) {
-            errorMessage += "Le mot de passe est obligatoire";
+            errorMessage += " Le mot de passe est obligatoire ";
         }
 
         if (password2 == null || password2.isEmpty()) {
-            errorMessage += "La confirmation de mot de passe est obligatoire";
+            errorMessage += " La confirmation de mot de passe est obligatoire ";
         } else if (!password1.equals(password2)) {
-            errorMessage += "Les mots de passe sont différents";
+            errorMessage += " Les mots de passe sont différents ";
         }
 
         if (incident1 == null || incident1.isEmpty()) {
-            errorMessage += "Veuillez renseigner au moins un IncidentServlet.";
+            errorMessage += " Veuillez renseigner au moins un Incident.";
         }
 
         if (!errorMessage.isEmpty()) {
             request.setAttribute("error", true);
+            ConnectionSQL conn = new ConnectionSQL();
+            List<Incident> incidentList = conn.getIncident();
+            request.setAttribute("incidentList", incidentList);
             request.setAttribute("errorMessage", errorMessage);
             this.getServletContext().getRequestDispatcher( "/view/SignInHero.jsp").forward( request, response );
         } else if (errorMessage.isEmpty()) {
             ConnectionSQL cc = new ConnectionSQL();
             cc.insertHero(name, incident1, incident2, incident3, phone, lat, lng);
-            response.sendRedirect("index.jsp");
+            List<Incident> incidentList = cc.getIncident();
+            List<String> heroList = cc.getHero();
+            if(incidentList==null || incidentList.isEmpty()) {
+            }
+            request.setAttribute("incidentList", incidentList);
+            request.setAttribute("heroList", heroList);
+            request.getRequestDispatcher("/view/index.jsp").forward(request, response);
         }
 
 
