@@ -1,10 +1,11 @@
-<%@ page import="com.demo.controller.connectionSQL" %>
 <%@ page import="java.util.List" %>
+<%@ page import="com.demo.model.Incident" %>
+<%@ page import="com.demo.model.Hero" %>
 <%@ page import="com.google.gson.Gson" %>
 
 <%
-connectionSQL conn = new connectionSQL();
-List<String> heroList = conn.getHero();
+    List<Incident> incidentList = (List<Incident>) request.getAttribute("incidentList");
+    List<String> heroList = (List<String>) request.getAttribute("heroList");
 %>
 
 <!DOCTYPE html>
@@ -18,7 +19,7 @@ List<String> heroList = conn.getHero();
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
     integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
     crossorigin=""/>
-    <link rel="stylesheet" href="CSS/mapstyle.css">
+    <style type="text/css"><%@include file="/CSS/mapstyle.css"%></style>
 
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
     integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
@@ -35,15 +36,17 @@ List<String> heroList = conn.getHero();
         </div>
     </div>
 
-    <form action="incident" method="post">
+    <form action="IncidentServlet" method="post">
         <div id="formMap">
             <div class="select">
                 <label class="textselect" for="incident-select1">Selectionnez le type d'incident:</label>
                 <select name="valuedeclareincident">
                     <option value=""></option>
-                    <% for (String value : conn.getIncident()) { %>
-                        <option value="<%= value %>"><%= value %></option>
-                    <% } %>
+                        <% for (Incident incident : incidentList) {
+                            int id = incident.getIdIncidents();
+                            String name = incident.getNom_incident();%>
+                            <option value="<%= id%>"><%= name %></option>
+                        <% } %>
                 </select>
                 <input type="hidden" name="intlat" type="text" placeholder="latitude">
                 <input type="hidden" name="intlng" type="text" placeholder="longitude">
@@ -53,7 +56,7 @@ List<String> heroList = conn.getHero();
         </div>
     </form>
 
-    <div id="map"></div>
+    <div id="map"</div>
 
     <Script>
         var map = L.map('map');

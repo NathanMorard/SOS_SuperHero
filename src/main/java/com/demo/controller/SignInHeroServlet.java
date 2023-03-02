@@ -1,5 +1,6 @@
 package com.demo.controller;
 
+import com.demo.model.Incident;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -7,12 +8,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.List;
+
 
 @WebServlet("/SignInHeroServlet")
 public class SignInHeroServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.sendRedirect("/view/SignInHero.jsp");
+        ConnectionSQL conn = new ConnectionSQL();
+        List<Incident> incidentList = conn.getIncident();
+        request.setAttribute("incidentList", incidentList);
+        request.getRequestDispatcher("/view/SignInHero.jsp").forward(request, response);
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -27,38 +33,36 @@ public class SignInHeroServlet extends HttpServlet {
         String lng = request.getParameter("intlng");
         String password1 = request.getParameter("txtpassword1");
         String password2 = request.getParameter("txtpassword2");
+        String errorMessage = "";
 
         if (name == null || name.isEmpty()) {
-            System.out.println("Le login n'est pas renseigné");
-            request.setAttribute("error", true);
-            doGet(request, response);
-            return;
+            errorMessage += "Le login est obligatoire";
         }
 
         if (password1 == null || password1.isEmpty()) {
-            System.out.println("Le mot de passe est obligatoire");
-            request.setAttribute("error", true);
-            request.setAttribute("errorMessage", "Le mot de passe est obligatoire");
-            doGet(request, response);
-            return;
+            errorMessage += "Le mot de passe est obligatoire";
         }
 
         if (password2 == null || password2.isEmpty()) {
-            System.out.println("La confirmation de mot de passe est obligatoire");
-            request.setAttribute("error", true);
-            request.setAttribute("errorMessage", "La confirmation de mot de passe est obligatoire");
-            doGet(request, response);
-            return;
+            errorMessage += "La confirmation de mot de passe est obligatoire";
         } else if (!password1.equals(password2)) {
-            System.out.println("Les mots de passe sont différents");
-            request.setAttribute("error", true);
-            request.setAttribute("errorMessage", "Les mots de passe sont différents");
-            doGet(request, response);
-            return;
+            errorMessage += "Les mots de passe sont différents";
         }
 
-        connectionSQL cc = new connectionSQL();
-        cc.insertHero(name, incident1, incident2, incident3, phone, lat, lng);
-        response.sendRedirect("index.jsp");
+        if (incident1 == null || incident1.isEmpty()) {
+            errorMessage += "Veuillez renseigner au moins un IncidentServlet.";
+        }
+
+        if (!errorMessage.isEmpty()) {
+            request.setAttribute("error", true);
+            request.setAttribute("errorMessage", errorMessage);
+            this.getServletContext().getRequestDispatcher( "/view/SignInHero.jsp").forward( request, response );
+        } else if (errorMessage.isEmpty()) {
+            ConnectionSQL cc = new ConnectionSQL();
+            cc.insertHero(name, incident1, incident2, incident3, phone, lat, lng);
+            response.sendRedirect("index.jsp");
+        }
+
+
     }
 }

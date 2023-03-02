@@ -12,10 +12,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.System.out;
-
-@WebServlet("/incident")
-public class incident extends HttpServlet {
+@WebServlet("/IncidentServlet")
+public class IncidentServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.sendRedirect("index.jsp");
@@ -28,7 +26,7 @@ public class incident extends HttpServlet {
         Double lat = Double.parseDouble(latParam);
         Double lng = Double.parseDouble(lngParam);
         String incident = request.getParameter("valuedeclareincident");
-        connectionSQL conn = new connectionSQL();
+        ConnectionSQL conn = new ConnectionSQL();
 
         List<Hero> heroList = conn.getHeroForIncident(incident);
         List<Hero> heroListFiltered = new ArrayList<>();

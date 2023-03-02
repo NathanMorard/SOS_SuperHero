@@ -4,11 +4,11 @@
   <!--Homepage lancement -->
   <servlet>
     <servlet-name>home</servlet-name>
-    <servlet-class>com.demo.controller.home</servlet-class>
+    <servlet-class>com.demo.controller.Home</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>home</servlet-name>
-    <url-pattern>/home</url-pattern>
+    <url-pattern>/</url-pattern>
   </servlet-mapping>
 
 <!--  Loginpage servlet-->

@@ -5,16 +5,17 @@ import java.util.List;
 import java.util.ArrayList;
 
 import com.demo.model.Hero;
+import com.demo.model.Incident;
 
 
-public class connectionSQL {
+public class ConnectionSQL {
     private static String jdbcUrl = "jdbc:mysql://localhost:3306/superherojava";
     private static String user = "root";
     private static String password = "root";
     private Connection connection;
 
     public static void insertHero(String name, String incident1, String incident2, String incident3, String phone, String lat, String lng) {
-        String request = "INSERT INTO superherojava.superhero (NameHero, Incident1, Incident2, Incident3, Phone, latitude, longtitude ) VALUES (?,?,?,?,?,?,?)";
+        String request = "INSERT INTO superherojava.superhero (NameHero, Incident1, Incident2, Incident3, Phone, latitude, longitude ) VALUES (?,?,?,?,?,?,?)";
         try {
             Connection con = DriverManager.getConnection(jdbcUrl, user, password);
             PreparedStatement stmhero = con.prepareStatement(request);
@@ -43,10 +44,10 @@ public class connectionSQL {
 
             ResultSet rs = stmhero.executeQuery();
             while (rs.next()) {
-                String latitudeStr = rs.getString("latitude");
-                String longitudeStr = rs.getString("longitude");
-                double latitude = Double.parseDouble(latitudeStr);
-                double longitude = Double.parseDouble(longitudeStr);
+                Double latitude = rs.getDouble("latitude");
+                Double longitude = rs.getDouble("longitude");
+                //double latitude = Double.parseDouble(latitudeStr);
+                //double longitude = Double.parseDouble(longitudeStr);
                 heroList.add(latitude + "," + longitude);
             }
 
@@ -69,19 +70,22 @@ public class connectionSQL {
 
 
 
-    public List<String> getIncident() {
-        List<String> values = new ArrayList<>();
+    public List<Incident> getIncident() {
+        List<Incident> incidentList = new ArrayList<>();
         try (Connection conn = DriverManager.getConnection(jdbcUrl, user, password);
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT nom_incident FROM superherojava.incidents")) {
+             ResultSet rs = stmt.executeQuery("SELECT * FROM superherojava.incidents")) {
 
             while (rs.next()) {
-                values.add(rs.getString("nom_incident"));
+                int idIncidents = Integer.parseInt(rs.getString("idIncidents"));
+                String nom_incident = rs.getString("nom_incident");
+                var incident = new Incident(idIncidents, nom_incident);
+                incidentList.add(incident);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return values;
+        return incidentList;
     }
 
 

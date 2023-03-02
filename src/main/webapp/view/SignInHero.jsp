@@ -1,5 +1,9 @@
-<%@ page import="com.demo.controller.connectionSQL" %>
+<%@ page import="java.util.List" %>
+<%@ page import="com.demo.model.Incident" %>
 
+<%
+    List<Incident> incidentList = (List<Incident>) request.getAttribute("incidentList");
+%>
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -7,7 +11,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../CSS/SignInStyle.css">
+    <style type="text/css"><%@include file="/CSS/SignInStyle.css"%></style>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
     integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
     crossorigin=""/>
@@ -23,37 +27,44 @@
         <p class="email">Utilisez votre Adresse mail: </p>
         <div class="inputs">
             <input  name="txtname" type="text" placeholder="Name">
-            <input  name="txtphone" type="number" placeholder="Phone">
+            <input  name="txtphone" type="text" placeholder="Phone">
             <input  name="intlat" type="text" placeholder="latitude">
             <input  name="intlng" type="text" placeholder="longitude">
 
             <input  name="txtpassword1" type="password" placeholder="Password">
             <input  name="txtpassword2" type="password" placeholder="Password">
         </div>
-        <% connectionSQL conn = new connectionSQL(); %>
+
         <label for="incident-select1">Selectionnez le type d'incident:</label>
         <select name="valueincident1">
             <option value=""></option>
-            <% for (String value : conn.getIncident()) { %>
-                <option value="<%= value %>"><%= value %></option>
-            <% } %>
+                <% for (Incident incident : incidentList) {
+                    int id = incident.getIdIncidents();
+                    String name = incident.getNom_incident();%>
+                    <option value="<%= id%>"><%= name %></option>
+                <% } %>
         </select>
 
         <label for="incident-select2">Selectionnez le type d'incident:</label>
         <select name="valueincident2">
             <option value=""></option>
-            <% for (String value : conn.getIncident()) { %>
-                <option value="<%= value %>"><%= value %></option>
-            <% } %>
+                <% for (Incident incident : incidentList) {
+                    int id = incident.getIdIncidents();
+                    String name = incident.getNom_incident();%>
+                    <option value="<%= id%>"><%= name %></option>
+                <% } %>
         </select>
 
         <label for="incident-select3">Selectionnez le type d'incident:</label>
         <select name="valueincident3">
-        <option value=""></option>
-            <% for (String value : conn.getIncident()) { %>
-                <option value="<%= value %>"><%= value %></option>
-            <% } %>
+            <option value=""></option>
+                <% for (Incident incident : incidentList) {
+                    int id = incident.getIdIncidents();
+                    String name = incident.getNom_incident();%>
+                    <option value="<%= id%>"><%= name %></option>
+                <% } %>
         </select>
+
 
         <button  class="inscription" type="submit" >S'inscrire </button>
 
@@ -121,5 +132,14 @@
         }
         map.on('click', onMapClick);
     </Script>
+
+    <% if (request.getAttribute("error") != null && (Boolean)request.getAttribute("error")) { %>
+        <script>
+            var errorMessage = '<%= request.getAttribute("errorMessage") %>';
+            if (errorMessage !== '') {
+                alert(errorMessage);
+            }
+        </script>
+    <% } %>
 </body>
 </html>
